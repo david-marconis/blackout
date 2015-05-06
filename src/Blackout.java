@@ -12,8 +12,11 @@ import javax.swing.JPopupMenu;
 public class Blackout {
 	private JPopupMenu menu;
 	private JFrame frame;
-	private int button;
 	private Point mouseLocation;
+	private Point frameSize = new Point();
+	private int button;
+	private static final int MIN_SIZE = 20;
+	
 	public static void main(String[] args) {
 		new Blackout();
 	}
@@ -34,6 +37,7 @@ public class Blackout {
 		MListener mListener = new MListener();
 		frame.addMouseListener(mListener);
 		frame.addMouseMotionListener(mListener);
+		frameSize = new Point(frame.getLocation());
 		
 		frame.setVisible(true);
 	}
@@ -62,9 +66,9 @@ public class Blackout {
 				frame.setLocation(x, y);
 				frame.revalidate();
 			} else if (button == MouseEvent.BUTTON3) {
-				int width = (int) (me.getX());
-				int height = (int) (me.getY());
-				frame.setSize(width, height);
+				int width = (int) (me.getX() + frameSize.getX() - mouseLocation.getX());
+				int height = (int) (me.getY() + frameSize.getY() - mouseLocation.getY());
+				frame.setSize(Math.max(MIN_SIZE, width), Math.max(MIN_SIZE, height));
 				frame.revalidate();
 			}
 		}
@@ -72,6 +76,7 @@ public class Blackout {
 		public void mousePressed(MouseEvent me) {
 			button = me.getButton();
 			mouseLocation = me.getPoint();
+			frameSize.setLocation(frame.getWidth(), frame.getHeight());
 		}
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
