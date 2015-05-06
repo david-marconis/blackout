@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -9,8 +10,10 @@ import javax.swing.JPopupMenu;
 
 
 public class Blackout {
-	JPopupMenu menu;
-	
+	private JPopupMenu menu;
+	private JFrame frame;
+	private int button;
+	private Point mouseLocation;
 	public static void main(String[] args) {
 		new Blackout();
 	}
@@ -21,7 +24,7 @@ public class Blackout {
 	}
 
 	private void initializeFrame() {
-		JFrame frame = new JFrame();
+		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setSize(500, 200);
@@ -48,25 +51,36 @@ public class Blackout {
 		public void mouseClicked(MouseEvent me) {
 			if (me.getButton() == MouseEvent.BUTTON3) {
 				menu.show(me.getComponent(), me.getX(), me.getY());
-			} else {
-				
 			}
 		}
 		
 		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
+		public void mouseDragged(MouseEvent me) {
+			if (button == MouseEvent.BUTTON1) {
+				int x = (int) (me.getXOnScreen() - mouseLocation.getX());
+				int y = (int) (me.getYOnScreen() - mouseLocation.getY());
+				frame.setLocation(x, y);
+				frame.revalidate();
+			} else if (button == MouseEvent.BUTTON3) {
+				int width = (int) (me.getX());
+				int height = (int) (me.getY());
+				frame.setSize(width, height);
+				frame.revalidate();
+			}
 		}
-
+		@Override
+		public void mousePressed(MouseEvent me) {
+			button = me.getButton();
+			mouseLocation = me.getPoint();
+		}
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			button = 0;
+		}
 		@Override
 		public void mouseEntered(MouseEvent arg0) {/* Do nothing */}
 		@Override
 		public void mouseExited(MouseEvent arg0) {/* Do nothing */}
-		@Override
-		public void mousePressed(MouseEvent arg0) {/* Do nothing */}
-		@Override
-		public void mouseReleased(MouseEvent arg0) {/* Do nothing */}
 		@Override
 		public void mouseMoved(MouseEvent arg0) {/* Do nothing */}
 	}
